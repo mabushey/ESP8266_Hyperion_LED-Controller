@@ -3,8 +3,8 @@
 
 #include "BaseHeader.h"
 #include <ArduinoJson.h>
-#include <WifiServer.h>
-#include <WifiClient.h>
+#include <WiFiServer.h>
+#include <WiFiClient.h>
 
 #define TCP_BUFFER 512
 
@@ -19,7 +19,8 @@ class WrapperJsonServer {
 
     void
       onLedColorWipe(void(* function) (byte, byte, byte)),
-      onClearCmd(void(* function) (void));
+      onClearCmd(void(* function) (void)),
+      onEffectChange(void(* function) (Mode, int));
   private:
     void
       handleConnection(boolean newClient),
@@ -31,12 +32,17 @@ class WrapperJsonServer {
     void 
       clearCmd(void),
       (* clearCmdPointer) (void);
+    void 
+      effectChange(Mode effect, int interval = 0),
+      (* effectChangePointer) (Mode, int);
   
     WiFiServer _tcpServer;
     WiFiClient _tcpClient;
     
     uint16_t _ledCount;
     uint16_t _tcpPort;
+
+    byte* _activeLedColor;
 };
 
 #endif

@@ -2,7 +2,7 @@
 #define ConfigStructures_h
 
 #define CONFIG_START_ADDRESS 0
-#define CONFIG_ACTIVE_VERSION 2
+#define CONFIG_ACTIVE_VERSION 3
 
 typedef struct {
   uint8_t a;
@@ -27,14 +27,11 @@ typedef struct {
 } ConfigWifi;
 
 typedef struct {
-  uint8_t chipset;
-  uint8_t colorOrder;
-  uint8_t dataPin;
-  uint8_t clockPin;
-  uint16_t count;
   uint8_t idleMode;
+  uint32_t timeoutMs;
+  boolean autoswitch;
 
-  char spacer[32];
+  char spacer[59];
 } ConfigLed;
 
 typedef struct {
@@ -50,15 +47,5 @@ typedef struct {
   ConfigLed led;
   ConfigPort ports;
 } ConfigStruct;
-
-enum Chipset {
-  SPI_LPD8806,
-  SPI_WS2801,
-  SPI_WS2803,
-  SPI_SM16716,
-  SPI_P9813,
-  SPI_APA102,
-  SPI_DOTSTAR
-};
 
 #endif

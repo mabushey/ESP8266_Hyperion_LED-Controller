@@ -2,10 +2,11 @@
 #define WrapperWebconfig_h
 #include "BaseHeader.h"
 
-#ifdef CONFIG_TYPE_WEBCONFIG
-
-#include <ESP8266WebServer.h>
-#include <FastLED.h>
+#if defined(ESP8266)
+  #include <ESP8266WebServer.h>
+#elif defined(ESP32)
+  #include <ESP32WebServer.h>
+#endif
 #include <LinkedList.h>
 
 class SelectEntryBase {
@@ -57,35 +58,33 @@ class WrapperWebconfig {
       escape(char* text),
       escape(uint8_t text),
       escape(uint16_t text),
+      escape(uint32_t text),
       ipToString(ConfigIP ip),
       
       htmlTemplate(String title, String content),
       groupTemplate(String title, String body),
-      entryTemplate(String title, String id, String content),
-      textTemplate(String title, String id, String text, String placeholder, int maxLen),
-      selectTemplate(String title, String id, LinkedList<SelectEntryBase*>* entries),
+      entryTemplate(String label, String tooltip, String id, String content),
+      textTemplate(String label, String tooltip, String id, String text, String placeholder, int maxLen),
+      checkboxTemplate(String label, String tooltip, String id, boolean isChecked),
+      selectTemplate(String label, String tooltip, String id, LinkedList<SelectEntryBase*>* entries),
       config(void);
 
     void
       initHelperVars(void),
       clearHelperVars(void),
       clearLinkedList(LinkedList<SelectEntryBase*>* target),
-      getChipsets(uint8_t active, LinkedList<SelectEntryBase*>* target),
-      getAllPins(uint8_t active, LinkedList<SelectEntryBase*>* target),
-      getRgbOrder(uint8_t active, LinkedList<SelectEntryBase*>* target),
       getIdleModes(uint8_t active, LinkedList<SelectEntryBase*>* target);
 
     template<typename T>
     T getSelectedEntry(String selectedEntryValue, LinkedList<SelectEntryBase*>* target);
     
-    LinkedList<SelectEntryBase*>* _chipsets;
-    LinkedList<SelectEntryBase*>* _rgbOrder;
-    LinkedList<SelectEntryBase*>* _dataPins;
-    LinkedList<SelectEntryBase*>* _clockPins;
     LinkedList<SelectEntryBase*>* _idleModes;
-    
-    ESP8266WebServer _server = ESP8266WebServer(80);
+
+    #if defined(ESP8266)
+      ESP8266WebServer* _server = new ESP8266WebServer(80);
+    #elif defined(ESP32)
+      ESP32WebServer* _server = new ESP32WebServer(80);
+    #endif
 };
 
-#endif
 #endif
